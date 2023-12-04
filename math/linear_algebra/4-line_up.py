@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - add_array: Adds two arrays element-wise
+    Module Adds two arrays element-wise
 """
 
 
