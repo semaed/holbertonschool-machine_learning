@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - np_transpose: Transpose a matrix
+    Module Transpose a matrix
 """
 
 

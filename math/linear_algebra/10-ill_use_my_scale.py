@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - np_shape: Calculates the shape of a numpy.ndarray
+    Module Calculates the shape of a numpy.ndarray
 """
 
 

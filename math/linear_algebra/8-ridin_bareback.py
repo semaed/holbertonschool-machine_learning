@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - mat_mul: Matrix multiplication
+    Module Matrix multiplication
 """
 
 

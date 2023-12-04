@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - np_elementwise - Performs element-wise addition,
-                        subtraction, multiplication, and
-                        division.
+    Module Performs element-wise addition,subtraction, multiplication,
+      and division.
 """
 
 
