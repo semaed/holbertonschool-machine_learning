@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - cat_arrays - Concatenates two arrays
+    Module Concatenates two arrays
 """
 
 

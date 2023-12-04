@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - cat_matrices2D - Concatenates two matrices along
-                            a specific axis
+    Module Concatenates two matrices along a specific axis
 """
 
 
