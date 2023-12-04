@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - np_cat: Concatenates two matrices along a
-        specific axis
+    Module Concatenates two matrices along a specific axis
 """
 import numpy as np
 
