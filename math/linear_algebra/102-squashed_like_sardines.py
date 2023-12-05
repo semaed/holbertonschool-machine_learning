@@ -1,9 +1,15 @@
 #!/usr/bin/env python3
 """Module Concatenates two matrices along a specific axis"""
 
+import copy
+
 
 def cat_matrices(mat1, mat2, axis=0):
     """Concatenates two matrices along a specific axis"""
+
+    # Create deep copies of the input matrices
+    mat1 = copy.deepcopy(mat1)
+    mat2 = copy.deepcopy(mat2)
 
     # Check if mat1 and mat2 are lists of lists (2D matrices)
     if (not all(isinstance(row, list) for row in mat1) or
