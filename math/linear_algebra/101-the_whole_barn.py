@@ -15,7 +15,8 @@ def add_matrices(mat1, mat2):
     """
 
     if not isinstance(mat1, list) or not isinstance(mat2, list):
-        return mat1 + mat2 if not isinstance(mat1, list) and not isinstance(mat2, list) else None
+        return mat1 + mat2 if not isinstance(mat1, list) \
+            and not isinstance(mat2, list) else None
 
     if len(mat1) != len(mat2):
         return None
