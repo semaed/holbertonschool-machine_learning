@@ -14,7 +14,7 @@ def add_matrices(mat1, mat2):
             new matrix with mat1 and mat2 added
     """
 
-    if len(mat1) != len(mat2):
+    if not isinstance(mat1, list) or not isinstance(mat2, list) or len(mat1) != len(mat2):
         return None
 
     if isinstance(mat1[0], list):
