@@ -3,35 +3,52 @@
 
 
 def cat_matrices(mat1, mat2, axis=0):
-    """Concatenates two matrices along a specific axis"""
+    """
+    Concatenates two matrices along a specific axis.
 
-    # Convert 1D lists to 2D lists
-    if isinstance(mat1[0], int):
-        mat1 = [[item] for item in mat1]
-    if isinstance(mat2[0], int):
-        mat2 = [[item] for item in mat2]
+    Args:
+    - mat1: First matrix.
+    - mat2: Second matrix.
+    - axis: Axis along which to concatenate.
 
-    # Create deep copies of the input matrices
-    mat1 = [row[:] for row in mat1]
-    mat2 = [row[:] for row in mat2]
+    Returns:
+    - Concatenated matrix or None if concatenation is not possible.
+    """
 
-    # Check if mat1 and mat2 are lists of lists (2D matrices)
-    if (not all(isinstance(row, list) for row in mat1) or
-            not all(isinstance(row, list) for row in mat2)):
-        return None
+    # Helper function to get the shape of a matrix
+    def get_shape(matrix):
+        if not isinstance(matrix, list) or not matrix:
+            return []
+        return [len(matrix)] + get_shape(matrix[0])
 
-    # Concatenate along axis 0
+    # Get shapes of both matrices
+    shape1 = get_shape(mat1)
+    shape2 = get_shape(mat2)
+
+    # Check if shapes are compatible for concatenation
+    if len(shape1) != len(shape2):
+        return None  # Different dimensions
+
+    for i in range(len(shape1)):
+        if i != axis and shape1[i] != shape2[i]:
+            return None  # Incompatible dimensions
+
+    # Concatenate matrices
     if axis == 0:
-        if len(mat1[0]) != len(mat2[0]):
-            return None
-        return [row[:] for row in mat1] + [row[:] for row in mat2]
-
-    # Concatenate along axis 1
-    elif axis == 1:
-        if len(mat1) != len(mat2):
-            return None
-        return [mat1[i][:] + mat2[i][:] for i in range(len(mat1))]
-
-    # If axis is neither 0 nor 1, return None
+        return mat1 + mat2
     else:
-        return None
+        # Recursively concatenate along the specified axis
+        return [cat_matrices(row1, row2, axis-1) if axis <= max(len(row1), len(row2))
+                else row1 + row2 for row1, row2 in zip(mat1, mat2)]
+
+
+# Example high-dimensional matrices
+mat3_3d = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]
+mat4_3d = [[[9, 10], [11, 12]], [[13, 14], [15, 16]]]
+
+# Test concatenation of high-dimensional matrices
+concat_3d_axis0 = cat_matrices(mat3_3d, mat4_3d)
+concat_3d_axis1 = cat_matrices(mat3_3d, mat4_3d, axis=1)
+concat_3d_axis2 = cat_matrices(mat3_3d, mat4_3d, axis=2)
+
+(concat_3d_axis0, concat_3d_axis1, concat_3d_axis2)
