@@ -38,7 +38,8 @@ def cat_matrices(mat1, mat2, axis=0):
         return mat1 + mat2
     else:
         # Recursively concatenate along the specified axis
-        return [cat_matrices(row1, row2, axis-1) if axis <= max(len(row1), len(row2))
+        return [cat_matrices(row1, row2, axis-1) if axis <= max(len(row1),
+                                                                len(row2))
                 else row1 + row2 for row1, row2 in zip(mat1, mat2)]
 
 
