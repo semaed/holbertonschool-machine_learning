@@ -14,10 +14,17 @@ def add_matrices(mat1, mat2):
             new matrix with mat1 and mat2 added
     """
 
-    if not isinstance(mat1, list) or not isinstance(mat2, list) or len(mat1) != len(mat2):
+    if not isinstance(mat1, list) or not isinstance(mat2, list):
+        return mat1 + mat2 if not isinstance(mat1, list) and not isinstance(mat2, list) else None
+
+    if len(mat1) != len(mat2):
         return None
 
-    if isinstance(mat1[0], list):
-        return [add_matrices(mat1[i], mat2[i]) for i in range(len(mat1))]
+    result = []
+    for i in range(len(mat1)):
+        temp = add_matrices(mat1[i], mat2[i])
+        if temp is None:
+            return None
+        result.append(temp)
 
-    return [mat1[i] + mat2[i] for i in range(len(mat1))]
+    return result
