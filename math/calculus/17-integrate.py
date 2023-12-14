@@ -22,5 +22,8 @@ def poly_integral(poly, C=0):
     for i in range(len(poly)):
         if type(poly[i]) is not int and type(poly[i]) is not float:
             return None
-        integral.append(poly[i] / (i + 1))
+        coefficient = poly[i] / (i + 1)
+        if coefficient.is_integer():
+            coefficient = int(coefficient)
+        integral.append(coefficient)
     return integral
