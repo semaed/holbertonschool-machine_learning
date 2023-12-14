@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-    Module content:
-        - summation_i_squared: Calculate the sum of squares
-                                from 1 to n.
+    Module Calculate the sum of squares from 1 to n.
 """
 
 
