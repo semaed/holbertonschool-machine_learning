@@ -17,7 +17,10 @@ def poly_integral(poly, C=0):
     if type(C) is not int:
         return None
     if len(poly) == 1:
-        return [C, poly[0]]
+        if poly[0] == 0:
+            return [C]
+        else:
+            return [C, poly[0]]
     integral = [C]
     for i in range(len(poly)):
         if type(poly[i]) is not int and type(poly[i]) is not float:
