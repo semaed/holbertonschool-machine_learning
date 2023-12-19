@@ -53,3 +53,33 @@ class Binomial:
             variance = sum([(i - mean)**2 for i in data]) / len(data)
             self.n = round(mean**2 / (mean - variance))
             self.p = mean / self.n
+
+    def pmf(self, k):
+        """
+        calculates PMF for given number of successes
+
+        parameters:
+            k [int]: the number of successes
+
+        returns:
+            PMF value for k
+        """
+        if type(k) is not int:
+            k = int(k)
+        if k < 0:
+            return 0
+        p = self.p
+        n = self.n
+        q = (1 - p)
+        n_factorial = 1
+        for i in range(n):
+            n_factorial *= (i + 1)
+        k_factorial = 1
+        for i in range(k):
+            k_factorial *= (i + 1)
+        nk_factorial = 1
+        for i in range(n - k):
+            nk_factorial *= (i + 1)
+        binomial_co = n_factorial / (k_factorial * nk_factorial)
+        pmf = binomial_co * (p ** k) * (q ** (n - k))
+        return pmf
