@@ -74,3 +74,21 @@ class Normal:
         """
         return (2.7182818285 ** (-0.5 * ((x - self.mean) / self.stddev) ** 2) /
                 (self.stddev * (2 * 3.1415926536) ** 0.5))
+
+    def cdf(self, x):
+        """
+        Calculates the value of the CDF for a given x-value
+
+        parameters:
+            x [float]: the x-value
+
+        returns:
+            the CDF value for x
+        """
+        mean = self.mean
+        stddev = self.stddev
+        pi = 3.1415926536
+        value = (x - mean) / (stddev * (2 ** 0.5))
+        erf = (2 / (pi ** 0.5)) * (value - (value ** 3) / 3 + (value ** 5) / 10
+                                   - (value ** 7) / 42 + (value ** 9) / 216)
+        return (1 / 2) * (1 + erf)
