@@ -61,3 +61,16 @@ class Normal:
             the x-value of z
         """
         return z * self.stddev + self.mean
+
+    def pdf(self, x):
+        """
+        Calculates the value of the PDF for a given x-value
+
+        parameters:
+            x [float]: the x-value
+
+        returns:
+            the PDF value for x
+        """
+        return (2.7182818285 ** (-0.5 * ((x - self.mean) / self.stddev) ** 2) /
+                (self.stddev * (2 * 3.1415926536) ** 0.5))
