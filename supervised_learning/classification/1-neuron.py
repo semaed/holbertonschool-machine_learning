@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-""" Neuron class that defines a single neuron performing
-binary classification
+"""
+    Module Content:
+        - A Neuron class that defines a single neuron
+        performing binary classification
 """
 import numpy as np
 
@@ -32,29 +34,35 @@ class Neuron:
             raise TypeError("nx must be an integer")
 
         if nx < 1:
-            raise ValueError("nx must be positive integer")
+            raise ValueError("nx must be a positive integer")
 
-        self.b = 0
-        self.W = np.random.normal(size=(1, nx))
-        self.A = 0
+        self.__b = 0
+        self.__W = np.random.normal(size=(1, nx))
+        self.__A = 0
 
-        @property
-        def b(self):
-            """
-                b: getter function for b attribute
-            """
-            return self.__b
+    @property
+    def W(self):
+        """
+            Getter function
 
-        @property
-        def A(self):
-            """
-                A: getter function for A attribute
-            """
-            return self.__A
+            Return: The weight vector for the neuron.
+        """
+        return self.__W
 
-        @property
-        def W(self):
-            """
-                W: getter function for W attribute
-            """
-            return self.__W
+    @property
+    def b(self):
+        """
+            Getter function
+
+            Return: The bias for the neuron.
+        """
+        return self.__b
+
+    @property
+    def A(self):
+        """
+            Getter function
+
+            Return: The activated output of the neuron (prediction).
+        """
+        return self.__A
