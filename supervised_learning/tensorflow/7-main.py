@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+"""
+Defines a function that evaluates output of
+neural network classifier
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +12,17 @@ evaluate = __import__('7-evaluate').evaluate
 
 
 def one_hot(Y, classes):
-    """convert an array to a one-hot matrix"""
+    """
+    Evaluates output of neural network
+
+    parameters:
+        X [numpy.ndarray]: contains the input data to evaluate
+        Y [numpy.ndarray]: contains the one-hot labels for X
+        save_path [string]: location to load the model from
+
+    returns:
+        the network's prediction, accuracy, and loss, respectively
+    """
     one_hot = np.zeros((Y.shape[0], classes))
     one_hot[np.arange(Y.shape[0]), Y] = 1
     return one_hot
