@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
-"""Defines a deep neural network performing binary classification
+"""
+    Module Content:
+        - Defines a deep neural network performing binary
+            classification
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,7 +13,6 @@ class DeepNeuralNetwork:
         Defines a deep neural network performing
         binary classification
     """
-
     def __init__(self, nx, layers):
         """
             Class constructor
@@ -33,7 +35,7 @@ class DeepNeuralNetwork:
                 self.__weights['W' + str(layer + 1)] = He_et_al
             else:
                 He_et_al = np.random.randn(layers[layer], layers[layer - 1]) *\
-                    np.sqrt(2/layers[layer-1])
+                              np.sqrt(2/layers[layer-1])
                 self.__weights['W' + str(layer + 1)] = He_et_al
 
     @property
@@ -155,4 +157,4 @@ class DeepNeuralNetwork:
             with open(filename, 'rb') as file:
                 return pickle.load(file)
         except FileNotFoundError:
-            raise FileNotFoundError("File not found: {}".format(filename))
+            return None
