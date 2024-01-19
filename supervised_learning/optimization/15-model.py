@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+"""
+Defines function that builds, trains, and saves a neural network model
+using TensorFlow using Adam optimization, mini-batch gradient descent,
+learning rate decay, and batch normalization
+"""
 import tensorflow.compat.v1 as tf
 import numpy as np
 tf.disable_v2_behavior()
