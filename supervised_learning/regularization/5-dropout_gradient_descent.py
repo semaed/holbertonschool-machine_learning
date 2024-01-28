@@ -1,24 +1,45 @@
 #!/usr/bin/env python3
-"""
-Defines function that updates the weights with Dropout regularization
-using gradient descent
-"""
+"""Script to implement dropout in a gradient descent"""
+
 import numpy as np
 
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
-    """ gradient descent with dropout"""
+    """
+    Function to use dropout in a gradient descent optimization model
+    Args:
+        Y: one-hot numpy.ndarray of shape (classes, m) that contains
+            the correct labels for the data
+            classes: is the number of classes
+            m: is the number of data points
+        weights: dictionary of the weights and biases
+                 of the neural network
+        cache: dictionary of the outputs and dropout masks of each
+               layer of the neural network
+        alpha: learning rate
+        keep_prob: probability that a node will be kept
+        L: number of layers of the network
+
+    Returns:
+
+    """
     m = Y.shape[1]
-    dz = cache["A" + str(L)] - Y
-    for x in range(L, 0, -1):
-        A_prev = cache["A" + str(x - 1)]
-        dw = np.matmul(dz, A_prev.T) / m
-        db = np.sum(dz, axis=1, keepdims=True) / m
-        inv = 1 - np.square(A_prev)
-        da = np.matmul(weights["W" + str(x)].T, dz)
-        if x > 1:
-            da = da * cache["D" + str(x - 1)]
-            da = da / keep_prob
-        dz = da * inv
-        weights["W" + str(x)] -= alpha * dw
-        weights["b" + str(x)] -= alpha * db
+    W_copy = weights.copy()
+
+    for i in reversed(range(L)):
+        A = cache["A" + str(i + 1)]
+        if i == L - 1:
+            dZ = A - Y
+            dW = (np.matmul(cache["A" + str(i)], dZ.T) / m).T
+            db = np.sum(dZ, axis=1, keepdims=True) / m
+        else:
+            dW2 = np.matmul(W_copy["W" + str(i + 2)].T, dZ2)
+            dtanh = 1 - (A * A)
+            dZ = dW2 * dtanh
+            dZ = dZ * cache["D" + str(i + 1)]
+            dZ = dZ / keep_prob
+            dW = np.matmul(dZ, cache["A" + str(i)].T) / m
+            db = np.sum(dZ, axis=1, keepdims=True) / m
+        weights["W" + str(i + 1)] = (W_copy["W" + str(i + 1)] - (alpha * dW))
+        weights["b" + str(i + 1)] = W_copy["b" + str(i + 1)] - (alpha * db)
+        dZ2 = dZ
