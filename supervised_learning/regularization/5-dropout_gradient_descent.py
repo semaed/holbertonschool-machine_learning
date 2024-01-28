@@ -7,7 +7,7 @@ import numpy as np
 
 
 def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
-    """ Updates the weights with Dropout regularization using gradient descent"""
+    """ gradient descent with dropout"""
     m = Y.shape[1]
     dz = cache["A" + str(L)] - Y
     for x in range(L, 0, -1):
