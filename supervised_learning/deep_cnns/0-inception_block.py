@@ -1,58 +1,59 @@
 #!/usr/bin/env python3
-"""
-Deep CNNs Module
-"""
+'''Inception Block'''
+
 import tensorflow.keras as K
 
 
 def inception_block(A_prev, filters):
-    """
-    Builds an inception block as described in Going Deeper with Convolutions(2014)
-    Args:
-        A_prev (ndarray): output from the previous layer
-        filters (tuple or list): contains F1, F3R, F3, F5R, F5, FPP
-    Returns:
-        concatenated output of the inception block
-    """
-    # Ensure filters is a list or tuple of the correct length
-    if not isinstance(filters, (list, tuple)) or len(filters) != 6:
-        raise ValueError("filters must be a list or tuple of length 6")
-
+    '''
+    builds an inception block.
+    :A_prev: is the output from the previous layer
+    :filters: is a tuple or list containing F1, F3R,
+    F3,F5R, F5, FPP, respectively:
+        F1: is the number of filters in the 1x1 convolution
+        F3R: is the number of filters in the 1x1 convolution
+        before the 3x3 convolution
+        F3: is the number of filters in the 3x3 convolution
+        F5R: is the number of filters in the 1x1 convolution
+        before the 5x5 convolution
+        F5: is the number of filters in the 5x5 convolution
+        FPP: is the number of filters in the 1x1 convolution
+        after the max pooling (Note : The output shape after
+        the max pooling layer is
+        outputshape = math.floor((inputshape - 1) / strides) + 1)
+    '''
+    init = K.initializers.he_normal()
     activation = 'relu'
-    seed = 42  # Choose any integer as the seed for reproducibility
-    # Provide seed to the initializer
-    init = K.initializers.he_normal(seed=seed)
     F1, F3R, F3, F5R, F5, FPP = filters
 
-    # 1x1 convolution
-    conv1x1 = K.layers.Conv2D(filters=F1, kernel_size=1, padding='same',
-                              activation=activation,
-                              kernel_initializer=init)(A_prev)
+    conv1 = K.layers.Conv2D(filters=F1, kernel_size=1, padding='same',
+                            activation=activation,
+                            kernel_initializer=init)(A_prev)
 
-    # 3x3 convolution, preceded by a 1x1 convolution to reduce dimensionality
-    conv3x3_reduce = K.layers.Conv2D(filters=F3R, kernel_size=1, padding='same',
-                                     activation=activation,
-                                     kernel_initializer=init)(A_prev)
-    conv3x3 = K.layers.Conv2D(filters=F3, kernel_size=3, padding='same',
-                              activation=activation,
-                              kernel_initializer=init)(conv3x3_reduce)
+    conv2 = K.layers.Conv2D(filters=F3R, kernel_size=1, padding='same',
+                            activation=activation,
+                            kernel_initializer=init)(A_prev)
 
-    # 5x5 convolution, preceded by a 1x1 convolution to reduce dimensionality
-    conv5x5_reduce = K.layers.Conv2D(filters=F5R, kernel_size=1, padding='same',
-                                     activation=activation,
-                                     kernel_initializer=init)(A_prev)
-    conv5x5 = K.layers.Conv2D(filters=F5, kernel_size=5, padding='same',
-                              activation=activation,
-                              kernel_initializer=init)(conv5x5_reduce)
+    conv3 = K.layers.Conv2D(filters=F3, kernel_size=3, padding='same',
+                            activation=activation,
+                            kernel_initializer=init)(conv2)
 
-    # Pooling layer, followed by a 1x1 convolution to reduce dimensionality
-    pool = K.layers.MaxPooling2D(pool_size=[3, 3], strides=(1, 1),
-                                 padding='same')(A_prev)
-    pool_proj = K.layers.Conv2D(filters=FPP, kernel_size=1, padding='same',
-                                activation=activation,
-                                kernel_initializer=init)(pool)
+    conv4 = K.layers.Conv2D(filters=F5R, kernel_size=1, padding='same',
+                            activation=activation,
+                            kernel_initializer=init)(A_prev)
 
-    # Concatenate the outputs of the 1x1 conv, 3x3 conv, 5x5 conv, and max pool layers
-    output = K.layers.concatenate([conv1x1, conv3x3, conv5x5, pool_proj])
+    conv5 = K.layers.Conv2D(filters=F5, kernel_size=5, padding='same',
+                            activation=activation,
+                            kernel_initializer=init)(conv4)
 
-    return output
+    pooling = K.layers.MaxPooling2D(pool_size=[3, 3], strides=(1, 1),
+                                    padding='same')(A_prev)
+
+    layer_poolP = K.layers.Conv2D(filters=FPP, kernel_size=1, padding='same',
+                                  activation=activation,
+                                  kernel_initializer=init)(pooling)
+
+    mid_layer = K.layers.concatenate([conv1, conv3,
+                                      conv5, layer_poolP])
+
+    return mid_layer
