@@ -16,8 +16,11 @@ def inception_block(A_prev, filters):
         concatenated output of the inception block
     """
     activation = 'relu'
-    init = K.initializers.he_normal(seed=None)
+    seed = 42  # Choose any integer as the seed for reproducibility
+    # Provide seed to the initializer
+    init = K.initializers.he_normal(seed=seed)
     F1, F3R, F3, F5R, F5, FPP = filters
+
     convly_1 = K.layers.Conv2D(filters=F1, kernel_size=1, padding='same',
                                activation=activation,
                                kernel_initializer=init)(A_prev)
