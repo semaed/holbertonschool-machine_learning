@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
-""" CNN Module """
+""" Convolutional Neural Networks Module """
 import tensorflow.compat.v1 as tf
 
 
 def lenet5(x, y):
-    """
-    builds a modified version of the LeNet-5
-    architecture using tensorflow
-    """
+    """Builds a modified version of the LeNet-5
+    architecture using tensorflow"""
     init = tf.keras.initializers.VarianceScaling(scale=2.0)
     activation = tf.nn.relu
     conv1 = tf.layers.Conv2D(filters=6, kernel_size=5, padding='same',
