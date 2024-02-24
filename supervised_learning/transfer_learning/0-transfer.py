@@ -1,91 +1,78 @@
 #!/usr/bin/env python3
 """Transfer learning CIFAR-10 in densenet 121"""
 
-import tensorflow as tf
-import tensorflow.keras as K
-import datetime
-from tensorflow.keras.datasets import cifar10
+import keras
+import numpy as np
 
-# Global Variables
-batch_size = 128
-num_classes = 10
-epochs = 32
+# Load the CIFAR-10 dataset
+(x_train, y_train), (x_test, y_test) = keras.datasets.cifar10.load_data()
+
+# Scale up the training and testing data to 224x224 pixels
+x_train = x_train.astype('float32') / 255.0
+x_test = x_test.astype('float32') / 255.0
+
+# Create a lambda layer to scale up the data
+lambda_layer = keras.layers.Lambda(lambda x: tf.image.resize(x, (224, 224)))
+
+# Load the pre-trained Keras application
+application = keras.applications.resnet50
+
+# Freeze most of the application layers
+for layer in application.layers[:-5]:
+    layer.trainable = False
+
+# Create the model
+model = keras.Sequential([
+    lambda_layer,
+    application,
+    keras.layers.Flatten(),
+    keras.layers.Dense(10, activation='softmax')
+])
+
+# Compile the model
+model.compile(loss='sparse_categorical_crossentropy',
+              optimizer='adam', metrics=['accuracy'])
+
+# Train the model
+model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
+
+# Save the trained model
+model.save('cifar10.h5')
 
 
 def preprocess_data(X, Y):
-    """
-    Function that pre-processes the data for your model
-    Args:
-        X: numpy.ndarray of shape (m, 32, 32, 3) containing the CIFAR 10 data,
-        where m is the number of data points
-        Y: numpy.ndarray of shape (m,) containing the CIFAR 10 labels for X
-    Returns: X_p, Y_p
-    """
-    X_p = K.applications.densenet.preprocess_input(X)
-    Y_p = K.utils.to_categorical(Y, num_classes)
-    return X_p, Y_p
+    """ pre-processes the data for your model """
+    # Scale up the training and testing data to 224x224 pixels
+    x_train = X.astype('float32') / 255.0
+    x_test = Y.astype('float32') / 255.0
 
+    # Create a lambda layer to scale up the data
+    lambda_layer = keras.layers.Lambda(
+        lambda x: tf.image.resize(x, (224, 224)))
 
-if __name__ == "__main__":
+    # Load the pre-trained Keras application
+    application = keras.applications.resnet50
 
-    (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-    x_train, y_train = preprocess_data(x_train, y_train)
-    x_test, y_test = preprocess_data(x_test, y_test)
-    inputs = K.Input(shape=(32, 32, 3))
-    n_input = K.layers.Lambda(lambda image: tf.image.resize(image,
-                                                            (155,
-                                                             155)))(inputs)
+    # Freeze most of the application layers
+    for layer in application.layers[:-5]:
+        layer.trainable = False
 
-    print('No Fine Tuning implemented')
-    base_model = K.applications.densenet.DenseNet121(include_top=False,
-                                                     weights='imagenet',
-                                                     pooling='max',
-                                                     input_tensor=n_input)
+    # Create the model
+    model = keras.Sequential([
+        lambda_layer,
+        application,
+        keras.layers.Flatten(),
+        keras.layers.Dense(10, activation='softmax')
+    ])
 
-    FC = base_model.layers[-1].output
-    FC = K.layers.Flatten()(FC)
-    FC = K.layers.BatchNormalization()(FC)
-    FC = K.layers.Dense(256, activation='relu')(FC)
-    FC = K.layers.Dense(128, activation='relu')(FC)
-    FC = K.layers.BatchNormalization()(FC)
-    FC = K.layers.Dropout(0.2)(FC)
-    FC = K.layers.Dense(10, activation='softmax')(FC)
-    model = K.models.Model(inputs=inputs, outputs=FC)
+    # Compile the model
+    model.compile(loss='sparse_categorical_crossentropy',
+                  optimizer='adam', metrics=['accuracy'])
 
-    # model.summary()
-    # REGULARIZATION AND OPTIMIZATION
-    lrr = K.callbacks.ReduceLROnPlateau(monitor='val_acc',
-                                        factor=.01,
-                                        patience=3,
-                                        min_lr=1e-5)
+    # Train the model
+    model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
 
-    check_point = K.callbacks.ModelCheckpoint(filepath='cifar10.h5',
-                                              monitor='val_loss',
-                                              mode='min', save_best_only=True,
-                                              verbose=1)
+    # Save the trained model
+    model.save('cifar10.h5')
 
-    early_stopping = K.callbacks.EarlyStopping(monitor='val_loss',
-                                               mode='min',
-                                               patience=10,
-                                               verbose=1)
-
-    model.compile(optimizer='adam', loss='categorical_crossentropy',
-                  metrics=['acc'])
-
-    # TENSOR BOARD
-    log_dir = "logs/fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-    tensorboard_callback = K.callbacks.TensorBoard(log_dir=log_dir,
-                                                   histogram_freq=1)
-
-    print('No Data Augmentation implemented')
-    history = model.fit(x_train, y_train,
-                        validation_data=(x_test, y_test),
-                        batch_size=batch_size,
-                        epochs=epochs,
-                        verbose=1,
-                        callbacks=[lrr,
-                                   check_point,
-                                   early_stopping,
-                                   tensorboard_callback])
-
-    # %tensorboard --logdir logs/fit
+    return x_train, x_test
