@@ -1,64 +1,62 @@
 #!/usr/bin/env python3
-"""K means"""
+"""
+Defines function that performs K-means on a dataset
+"""
+
 
 import numpy as np
 
 
 def kmeans(X, k, iterations=1000):
     """
-    K-means on a data set
-    Args:
-        X: numpy.ndarray of shape (n, d) containing the dataset
-           n: the number of data points
-           d: the number of dimensions for each data point
-        k: positive integer containing the number of clusters
-        iterations: positive integer containing the maximum number of
-        iterations that should be performed
-    Returns: C, clss, or None, None on failure
-             C: numpy.ndarray of shape (k, d) containing the centroid means
-                for each cluster
-             clss: numpy.ndarray of shape (n,) containing the index of
-                  the cluster in C that each data point belongs to
+    Performs K-means on a dataset
+
+    parameters:
+        X [numpy.ndarray of shape (n, d)]:
+            contains the dataset that will be used for K-means clustering
+            n: the number of data points
+            d: the number of dimensions for each data point
+        k [positive int]:
+            contains the number of clusters
+        iterations [positive int]:
+            contains the maximum number of iterations that should be performed
+
+    if no change in the cluster centroids occurs between iterations,
+        the function should return
+
+    initialize the cluster centroids using a multivariate unitform distribution
+
+    if a cluster contains no data points during the update step,
+        its centroid should be reinitialized
+
+    should use:
+        numpy.random.uniform exactly twice
+        at most 2 loops
+
+    returns:
+        C, clss:
+            C [numpy.ndarray of shape (k, d)]:
+                containing the centroid means for each cluster
+            clss [numpy.ndarray of shape (n,)]:
+                containting the index of the cluster in c
+                    that each data point belongs to
+        or None, None on failure
     """
-    if not isinstance(X, np.ndarray) or len(X.shape) != 2:
+    # type checks to catch failure
+    if type(X) is not np.ndarray or len(X.shape) != 2:
         return None, None
-    if not isinstance(k, int) or k <= 0:
+    if type(k) is not int or k <= 0:
         return None, None
-    if not isinstance(iterations, int) or iterations <= 0:
+    if type(iterations) is not int or iterations <= 0:
         return None, None
-
-    # Setting min and max values per col
     n, d = X.shape
-    X_min = X.min(axis=0)
-    X_max = X.max(axis=0)
-
-    # Centroid
-    C = np.random.uniform(X_min, X_max, size=(k, d))
-
-    # Loop for the maximum number of iterations
-    for i in range(iterations):
-
-        # initializes k centroids by selecting them from the data points
-        centroids = np.copy(C)
-        centroids_extended = C[:, np.newaxis]
-
-        # distances also know as euclidean distance
-        distances = np.sqrt(((X - centroids_extended) ** 2).sum(axis=2))
-        # an array containing the index to the nearest centroid for each point
-        clss = np.argmin(distances, axis=0)
-
-        # Assign all points to the nearest centroid
-        for c in range(k):
-            if X[clss == c].size == 0:
-                C[c] = np.random.uniform(X_min, X_max, size=(1, d))
-            else:
-                C[c] = X[clss == c].mean(axis=0)
-
-        centroids_extended = C[:, np.newaxis]
-        distances = np.sqrt(((X - centroids_extended) ** 2).sum(axis=2))
-        clss = np.argmin(distances, axis=0)
-
-        if (centroids == C).all():
-            break
-
+    # initialize cluster centroids using multivariate uniform distribution
+    low = np.min(X, axis=0)
+    high = np.max(X, axis=0)
+    C = np.random.uniform(low, high, size=(k, d))
+    # save copy of centroids to compare against later
+    save_centroids = np.copy(C)
+    if C.all() == saved_centroids.all():
+        return C, clss
+    saved_centroids = np.copy(C)
     return C, clss
