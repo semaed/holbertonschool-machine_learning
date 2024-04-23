@@ -1,11 +1,21 @@
 #!/usr/bin/env python3
-""" Module Autoencoder """
+"""Module autoencoder."""
 import tensorflow.keras as keras
 
 
 def autoencoder(input_dims, hidden_layers, latent_dims):
     """
-      Create a variational autoencoder
+    Create a variational autoencoder.
+    :input_dims (int): contains the dimensions of the model input
+    :hidden_layers (list): contains the number of nodes for each hidden
+    layer in the encoder, for the decoder they should be reversed
+    :latent_dims (int): contains the dimensions of the latent space
+    epresentation
+    Returns:
+        encoder: encoder model, which should output the latent representation,
+        the mean, and the log variance
+        decoder: decoder model
+        auto: full autoencoder model
     """
     X_input = keras.Input(shape=(input_dims,))
     hidden_ly = keras.layers.Dense(units=hidden_layers[0], activation='relu')
@@ -19,9 +29,7 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     z_log_sigma = latent_ly(Y_prev)
 
     def sampling(args):
-        """
-          Sample similar points in latent space
-        """
+        """Sample similar points in latent space."""
         z_m, z_stand_des = args
         batch = keras.backend.shape(z_m)[0]
         dim = keras.backend.int_shape(z_m)[1]
@@ -45,5 +53,6 @@ def autoencoder(input_dims, hidden_layers, latent_dims):
     e_output = encoder(X_input)[-1]
     d_output = decoder(e_output)
     auto = keras.Model(X_input, d_output)
+
     auto.compile(loss='binary_crossentropy', optimizer='adam')
     return encoder, decoder, auto
