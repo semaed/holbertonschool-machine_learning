@@ -1,19 +1,26 @@
 #!/usr/bin/env python3
-''' Bag of Words'''
+"""Module bag_of_words."""
 from sklearn.feature_extraction.text import CountVectorizer
 
 
 def bag_of_words(sentences, vocab=None):
-    '''
-    creates a bag of words embedding matrix
-    :sentences: is a list of sentences to analyze
-    :vocab: is a list of the vocabulary words to use for the analysis
-    '''
-    vectorizer = CountVectorizer(vocabulary=vocab)
-    # Learn the vocabulary dictionary and return document-term matrix.
-    X = vectorizer.fit_transform(sentences)
+    """
+    Create a bag of words embedding matrix.
+
+    Args:
+        sentences (list): sentences to analyze
+        vocab (list, optional): vocabulary words to use for the analysis.
+                                Defaults to None.
+    Returns:
+        embeddings: contains the embeddings
+        features: list of the features used for embeddings
+    """
     if vocab is None:
-        vocab = []
-    embedding = vectorizer.fit_transform(sentences).toarray()
-    vocab = list(vectorizer.get_feature_names())
+        vectorizer = CountVectorizer()
+        X = vectorizer.fit_transform(sentences)
+        vocab = vectorizer.get_feature_names_out()
+    else:
+        vectorizer = CountVectorizer(vocabulary=vocab)
+        X = vectorizer.fit_transform(sentences)
+    embedding = X.toarray()
     return embedding, vocab
