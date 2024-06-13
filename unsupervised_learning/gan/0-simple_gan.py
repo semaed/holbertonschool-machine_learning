@@ -5,16 +5,19 @@ from tensorflow import keras
 
 
 class Simple_GAN:
-    def __init__(self, ...):  # your existing parameters
-        ...
+    def __init__(self, real_examples, generator, discriminator, gan):
+        self.real_examples = real_examples
+        self.generator = generator
+        self.discriminator = discriminator
+        self.gan = gan
         self.history = {'discriminator_loss': [], 'adversarial_loss': []}
-        ...
 
     def train(self, epochs, verbose=True):
         for epoch in range(epochs):
-            ...
-            # existing code
-            ...
+            # Generate random points in the latent space
+            random_latent_vectors = tf.random.normal(shape=(20, 100))
+
+            # Decode them to fake images
             generated_images = self.generator(random_latent_vectors)
 
             # Combine them with real images
@@ -26,8 +29,7 @@ class Simple_GAN:
                 (self.real_examples.shape[0], 1))], axis=0)
 
             # Train the discriminator
-            d_loss = self.discriminator.train_on_batch(
-                combined_images, labels)
+            d_loss = self.discriminator.train_on_batch(combined_images, labels)
 
             # Assemble labels that say "all real images"
             misleading_labels = tf.zeros((20, 1))
